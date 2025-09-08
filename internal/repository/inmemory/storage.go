@@ -25,16 +25,13 @@ func (s *InMemoryStorage) SaveTodo(todo models.Todo) error {
 	defer s.mu.Unlock()
 
 	if todo.UID == "" {
-		// Создание нового
 		todo.UID = uuid.New().String()
 		todo.CreatedAt = time.Now()
 	} else {
-		// Обновление существующего
 		existing, exists := s.data[todo.UID]
 		if !exists {
 			return errors.New("todo not found")
 		}
-		// Сохраняем CreatedAt старого Todo
 		todo.CreatedAt = existing.CreatedAt
 	}
 
@@ -54,7 +51,6 @@ func (s *InMemoryStorage) GetTodo(req models.TodoRequest) (models.Todo, error) {
 	return todo, nil
 }
 
-// Получить все Todo
 func (s *InMemoryStorage) GetAllTodos() []models.Todo {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -66,7 +62,6 @@ func (s *InMemoryStorage) GetAllTodos() []models.Todo {
 	return todos
 }
 
-// Удалить Todo
 func (s *InMemoryStorage) DeleteTodo(uid string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
